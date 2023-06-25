@@ -75,20 +75,26 @@ button:hover {
 .plate-number-group {
     background-color: #e1f5fe;
     padding: 20px;
-    width: 200px;
     border-radius: 10px;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
     margin-top: 20px;
+    margin-bottom: 10px;
 }
 
-.plate-number-group h2 {
+.result-group {
+    display: flex;
+    column-gap: 8px;
+}
+
+.result-group h2 {
     margin: 0;
     font-size: 16px;
+    width: 230px;
+    text-align: left;
 }
 
-.plate-number-group p {
+.result-group p {
     margin: 0;
     font-size: 16px;
 }

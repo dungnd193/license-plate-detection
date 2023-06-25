@@ -2,11 +2,12 @@ import axios from "axios";
 import { useRef, useState } from "react";
 import './App.css';
 function App() {
-  const MOTORBIKE = 0;
-  const CAR = 1;
+  const MOTORBIKE = 1;
+  const CAR = 0;
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [plates, setPlates] = useState(null)
+  const [imgPath, setImgPath] = useState("")
   const [plateType, setPlateType] = useState(MOTORBIKE);
   const [showLoading, setShowLoading] = useState(false)
   const [showNotRecognize, setShowNotRecognize] = useState(false)
@@ -21,6 +22,8 @@ function App() {
     reader.onload = () => {
       setPreviewImage(reader.result);
       setPlates([]);
+      setImgPath("");
+      
       setShowNotRecognize(false);
     };
     reader.readAsDataURL(file);
@@ -45,6 +48,7 @@ function App() {
       })
         .then(response => {
           setPlates(response.data?.plates);
+          setImgPath(response.data?.image);
           if (!response.data?.plates?.length) {
             setShowNotRecognize(true)
           }
@@ -97,14 +101,24 @@ function App() {
               Car Plate
             </label>
           </div>
-          {previewImage ? <img src={previewImage} alt="Preview" className="preview-plate" /> : <div className="placeholder">
+          {previewImage ? <img src={imgPath ? `http://127.0.0.1:5000/image/${imgPath}` :previewImage} alt="Preview" className="preview-plate" /> : <div className="placeholder">
             <p>No picture selected. Please select one picture to recognize!</p>
           </div>}
           {showLoading && <div className="lds-ring"><div></div><div></div><div></div><div></div></div>}
           {plates && plates.length > 0 && plates.map((plate, idx) => (
             plate && <div className="plate-number-group" key={idx}>
-              <h2>Biển số xe:</h2>
-              <p>{plate.replace(/[\[\]\(\)\|{}]/g, "")}</p>
+              <div className="result-group">
+                <h2>Biển số xe:</h2>
+                <p>{plate.plate_text.replace(/[\[\]\(\)\|{}]/g, "")}</p>
+              </div>
+              <div className="result-group">
+                <h2>Object detection confidence:</h2>
+                <p>{plate.object_detection_confidence < 1 ? (plate.object_detection_confidence*100).toFixed(5) : plate.object_detection_confidence}%</p>
+              </div>
+              <div className="result-group">
+                <h2>OCR confidence:</h2>
+                <p>{plate.ocr_confidence < 1 ? (plate.ocr_confidence*100).toFixed(5) : plate.ocr_confidence}%</p>
+              </div>
             </div>
           ))}
           {showNotRecognize && <div className="placeholder">
