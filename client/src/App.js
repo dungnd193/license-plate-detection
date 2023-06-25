@@ -68,7 +68,7 @@ function App() {
   };
 
   const handlePlateTypeChange = (event) => {
-    setPlateType(event.target.value);
+    setPlateType(parseInt(event.target.value));
   };
   return (
     <div className="App">
@@ -82,6 +82,7 @@ function App() {
                 name="plateType"
                 value={MOTORBIKE}
                 onChange={handlePlateTypeChange}
+                checked={plateType === MOTORBIKE}
               />
               Motorbike Plate
             </label>
@@ -91,6 +92,7 @@ function App() {
                 name="plateType"
                 value={CAR}
                 onChange={handlePlateTypeChange}
+                checked={plateType === CAR}
               />
               Car Plate
             </label>
@@ -98,9 +100,9 @@ function App() {
           {previewImage ? <img src={previewImage} alt="Preview" className="preview-plate" /> : <div className="placeholder">
             <p>No picture selected. Please select one picture to recognize!</p>
           </div>}
-          {showLoading && <div class="lds-ring"><div></div><div></div><div></div><div></div></div>}
-          {plates && plates.length > 0 && plates.map(plate => (
-            plate && <div className="plate-number-group">
+          {showLoading && <div className="lds-ring"><div></div><div></div><div></div><div></div></div>}
+          {plates && plates.length > 0 && plates.map((plate, idx) => (
+            plate && <div className="plate-number-group" key={idx}>
               <h2>Biển số xe:</h2>
               <p>{plate.replace(/[\[\]\(\)\|{}]/g, "")}</p>
             </div>
