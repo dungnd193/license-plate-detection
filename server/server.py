@@ -95,12 +95,10 @@ def read_plate(plate_type):
             # texts = pytesseract.image_to_string(
             #     img, lang="eng", config="--psm 6")
             df = pytesseract.image_to_data(img, output_type='data.frame')
-            df = df[df.conf != -1]
-            lines = df.groupby('block_num')['text'].apply(list)
-            conf = df.groupby(['block_num'])['conf'].mean()
+            df_filter = df[df.conf != -1]
             
-            plate_text = lines.iloc[0][0]
-            ocr_confidence = conf[1]
+            plate_text = df_filter.loc[len(df) - 1]['text']
+            ocr_confidence = df_filter.loc[len(df) - 1]['conf']
             plates.append((plate_text, ocr_confidence))
         elif (plate_type == TWO_LINE):
             ocr_result = EASY_OCR.readtext(img)
