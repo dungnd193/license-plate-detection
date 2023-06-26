@@ -92,12 +92,9 @@ def read_plate(plate_type):
         img = cv2.imread(img_path)
         if (plate_type == ONE_LINE):
             img = pre_processing_img(img)
-            # texts = pytesseract.image_to_string(
-            #     img, lang="eng", config="--psm 6")
+            plate_text = pytesseract.image_to_string(img, lang="eng", config="--psm 6")
             df = pytesseract.image_to_data(img, output_type='data.frame')
             df_filter = df[df.conf != -1]
-            
-            plate_text = df_filter.loc[len(df) - 1]['text']
             ocr_confidence = df_filter.loc[len(df) - 1]['conf']
             plates.append((plate_text, ocr_confidence))
         elif (plate_type == TWO_LINE):
